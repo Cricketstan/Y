@@ -1,367 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Premium Video Player</title>
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<style>
-  html, body {
-    margin: 0; padding: 0; width: 100%; height: 100%;
-    font-family: 'Poppins', sans-serif; background: #000; overflow-x: hidden;
-  }
-  header {
-    position: fixed; top: 0; left: 0; width: 100%;
-    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
-    display: flex; align-items: center; justify-content: center;
-    padding: 10px 16px; z-index: 1001; border-bottom: 1px solid rgba(255,255,255,0.15);
-  }
-  .menu-icon {
-    position: absolute; left: 16px; color: #fff; font-size: 28px; cursor: pointer;
-  }
-html, body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
-  font-family: 'Arial', sans-serif;
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.ui.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/controls.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: #000; height: 100%; }
+    #video-container { width: 100%; height: 100%; position: relative; }
+    video { width: 100%; height: 100%; background: #000; }#overlay-image {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 5;
 }
 
-.tabs {
-  display: flex;
-  background: #111;
-  border-bottom: 1px solid #333;
-}
- body {
-    margin: 0; padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #000; color: #fff;
-  }
-
-  .popup-overlay {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-  }
-
-  .popup-box {
-    width: 320px;
-    background: rgba(20, 20, 30, 0.6);
-    border: 1px solid rgba(173, 216, 230, 0.25);
-    border-radius: 20px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), 0 0 80px rgba(173, 216, 230, 0.15);
-    padding: 2rem 1.5rem;
-    text-align: center;
-    animation: fadeIn 0.5s ease forwards;
-    position: relative;
-  }
-
-  @keyframes fadeIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .popup-header {
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(45deg, #00eaff, #bd00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.4rem;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-  }
-
-  .popup-subtitle {
-    font-size: 1rem;
-    color: #aaa;
-    margin-bottom: 1.2rem;
-  }
-
-  .popup-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-
-  .popup-btn {
-    padding: 0.8rem;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.35s ease;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .popup-btn::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, rgba(0,255,255,0.3), rgba(255,0,255,0.2));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .popup-btn:hover::after {
-    opacity: 1;
-  }
-
-  .join-btn {
-    background: linear-gradient(135deg, #00eaff, #9c00ff);
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
-  }
-  .join-btn:hover {
-    background: linear-gradient(135deg, #00ffff, #c000ff);
-    box-shadow: 0 0 16px rgba(0, 255, 255, 0.6);
-  }
-
-  .already-btn {
-    background: rgba(255,255,255,0.05);
-  }
-  .already-btn:hover {
-    background: rgba(255,255,255,0.15);
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 12px;
-    right: 18px;
-    font-size: 1.3rem;
-    color: #00eaff;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  .close-btn:hover {
-    color: #ff00cc;
-  }
-.tab {
-  flex: 1;
-  text-align: center;
-  padding: 12px 0;
-  cursor: pointer;
-  color: #aaa;
-  font-weight: 500;
-  font-size: 14px;
-  transition: background 0.3s, color 0.3s, border-bottom 0.3s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  border-bottom: 3px solid transparent;
+.shaka-controls-container {
+  z-index: 10 !important; /* Make sure controls are on top */
 }
 
-.tab:hover {
-  background: #181818;
-  color: #ccc;
+.shaka-play-button {
+  z-index: 15 !important;
 }
 
-.tab.active {
-  background: #101d10;
-  color: #00ff80;
-  border-bottom: 3px solid #00ff80;
+/* PREMIUM MENU STYLES */
+.shaka-settings-menu {
+  background: rgba(30, 30, 30, 0.6) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.2);
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  max-width: 220px;
+  animation: fadeIn 0.25s ease;
 }
 
-.tab-content {
-  display: none;
-  width: 100%;
-  height: 65vh;
-  background: #000;
-}
-
-.tab-content.active {
+.shaka-settings-menu button {
   display: block;
-}
-
-.tab-content iframe {
   width: 100%;
-  height: 100%;
-  border: none;
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin: 4px 0;
+  border: 2px solid rgba(255,255,255,0.35);
+  font-size: 13px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.material-icons {
-  font-size: 18px;
+.shaka-settings-menu button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(0,198,255,0.12), rgba(0,114,255,0.12));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 8px;
+  z-index: 0;
 }
-  header img {
-    max-height: 45px;
-  }
-  #player {
-    margin-top: 60px; width: 100vw; height: calc(100vw * 9 / 16);
-    background: #000;
-  }
 
-  /* Sidebar Styles - Premium Glassmorphic */
-  .sidebar {
-    position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255,255,255,0.2);
-    color: #fff; z-index: 1100; transition: left 0.5s ease;
-    padding-top: 80px; box-shadow: 4px 0 15px rgba(0,0,0,0.4);
-    border-top-right-radius: 12px; border-bottom-right-radius: 12px;
-  }
-  .sidebar.open { left: 0; }
-  .sidebar a {
-    display: block; padding: 15px 24px; color: #fff; text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-weight: 500; font-size: 16px;
-    transition: background 0.3s, padding-left 0.3s;
-  }
-  .sidebar a:hover {
-    background: rgba(255,255,255,0.15);
-    padding-left: 32px;
-  }
-.menu-header {
-  font-size: 20px;
-  font-weight: 600;
-  text-align: center;
-  padding: 15px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
+.shaka-settings-menu button:hover::before,
+.shaka-settings-menu button:focus::before {
+  opacity: 1;
+}
+
+.shaka-settings-menu button:hover,
+.shaka-settings-menu button:focus {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
   color: #fff;
 }
-.popup-buttons a {
-  text-decoration: none;
+#overlay-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 5;
 }
-  .overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4); z-index: 1099; display: none;
-    transition: background 0.4s ease;
-  }
-  .overlay.show { display: block; }
 
-</style>
+.shaka-settings-menu button[aria-checked="true"] {
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 12px rgba(0, 198, 255, 0.7);
+}
+
+.shaka-settings-menu button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+  </style>
 </head>
 <body>
-<div class="popup-overlay" id="popup">
-  <div class="popup-box">
-    <button class="close-btn" onclick="closePopup()">×</button>
-    <div class="popup-header">Support Us!</div>
-    <div class="popup-subtitle">Join our Telegram for latest updates.</div>
-    <div class="popup-buttons">
-      <a href="https://t.me/yourtelegramchannel" target="_blank" class="popup-btn join-btn">Join Now</a>
-      <button class="popup-btn already-btn" onclick="closePopup()">Already Joined</button>
-    </div>
-  </div>
-</div>
-<header>
-  <span class="material-icons menu-icon" onclick="toggleSidebar()">menu</span>
-  <img src="https://i.ibb.co/rKDCBvph/Picsart-25-06-10-00-08-54-780.png" alt="Logo" />
-</header>
+  <div id="video-container">
+    <video id="video" class="shaka-video" autoplay></video>
+    <img id="overlay-image" src="https://i.ibb.co/DgGJ2RHk/willowsports-hrb.jpg" alt="willowsports-hrb">
+    <div class="shaka-controls-container" shaka-controls></div>
+  </div>  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const manifestUri = 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/f60kqesunw/out/v1/a435ed7a00f947deb4369b46d8f2fb70/cenc.mpd';
+      const video = document.getElementById('video');
+      const overlayImage = document.getElementById('overlay-image');
+      const container = document.getElementById('video-container');
 
-<div class="sidebar" id="sidebar">
-  <div class="menu-header">MENU</div>
-  <a href="https://t.me/yourtelegramchannel" target="_blank"> Join Our Telegram</a>
-  <a href="https://t.me/yourtelegramchannel" target="_blank"> Contact Us</a>
-  <a href="https://t.me/yourtelegramchannel" target="_blank">Copyright</a>
-</div>
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+      const player = new shaka.Player(video);
+      const ui = new shaka.ui.Overlay(player, container, video);
+      const controls = ui.getControls();
 
-<video id="player" playsinline controls></video>
+      player.configure({
+        drm: {
+          clearKeys: {
+            '1779c27b9d077a3ba0c9cc1bb9a94b9f': 'cc5cf3b7928fb9e0a1ee6a8b566f0a8e'
+          }
+        }
+      });
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-<!-- Google Material Icons -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      ui.configure({
+        controlPanelElements: [
+          'play_pause', 'rewind', 'fast_forward', 'time_and_duration',
+          'spacer', 'mute', 'volume', 'captions', 'quality', 'playback_rate', 
+          'cast', 'loop', 'fullscreen'
+        ],
+        enableQualitySelection: true
+      });
 
-<div class="tabs">
-  <div class="tab" id="livechat-tab" onclick="openTab('livechat')">
-    <span class="material-icons">chat</span> Live Chat
-  </div>
-  <div class="tab" id="scoreboard-tab" onclick="openTab('scoreboard')">
-    <span class="material-icons">leaderboard</span> Scoreboard
-  </div>
-  <div class="tab" id="moments-tab" onclick="openTab('moments')">
-    <span class="material-icons">movie</span> Top Moments
-  </div>
-</div>
+      player.addEventListener('error', (e) => console.error('Error code', e.detail.code, e.detail));
 
-<div class="tab-content" id="livechat-content">
-  <iframe src="https://cricketstan.github.io/Live-Chat/" allowfullscreen></iframe>
-</div>
-
-<div class="tab-content" id="scoreboard-content">
-  <iframe src="https://allrounder745.github.io/Scoreboard-/" allowfullscreen></iframe>
-</div>
-
-<div class="tab-content" id="moments-content">
-  <iframe src="https://cricketstan.github.io/Top-moments-/" allowfullscreen></iframe>
-</div>
-<script>
-  const jsonUrl = 'https://raw.githubusercontent.com/StmpupCricket/Star-Sports-Hindi-json/refs/heads/main/data.json';
-  fetch(jsonUrl)
-    .then(res => res.json())
-    .then(data => {
-      const m3u8Url = data.stream_url;
-      const video = document.getElementById('player');
-
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(m3u8Url);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          const qualities = hls.levels.map(l => l.height).filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>b-a);
-          new Plyr(video, {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed'],
-            quality: {
-              default: qualities[0],
-              options: qualities,
-              forced: true,
-              onChange: q => {
-                const level = hls.levels.findIndex(l => l.height === q);
-                hls.currentLevel = level;
-              }
-            }
-          });
-          video.play();
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = m3u8Url;
-        video.addEventListener('loadedmetadata', () => {
-          new Plyr(video, {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed']
-          });
-          video.play();
-        });
-      } else {
-        alert("Your browser does not support HLS.");
+      try {
+        await player.load(manifestUri);
+        console.log('The video has now been loaded!');
+      } catch (e) {
+        console.error('Error loading video', e);
       }
-    })
-    .catch(err => {
-      console.error('Failed to load stream:', err);
-      alert('Failed to load stream.');
+
+      video.addEventListener('playing', () => {
+        overlayImage.remove();
+      });
     });
-
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('show');
-  }
-function openTab(tabName) {
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-  document.getElementById(tabName + '-tab').classList.add('active');
-  document.getElementById(tabName + '-content').classList.add('active');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  openTab('livechat'); // default tab
-});
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-  }
-</script>
-
-</body>
+  </script></body>
 </html>
